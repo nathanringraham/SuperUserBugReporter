@@ -149,7 +149,7 @@ public class SendEmail extends EmailDeveloperUI {
         
         
         
-                final String emailAccount = "superuserdevs@gmail.com";
+                final String emailAccount = "[removed]@gmail.com";
                 final String password = "[removed]";
                 Properties mailServerProperties;
                 Session getMailSession;
