@@ -19,7 +19,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javax.mail.MessagingException;
-import static javax.print.attribute.standard.Chromaticity.COLOR;
 
 
 
@@ -55,6 +54,8 @@ public class EmailDeveloperUI extends Application {
         EmailContentsField.setTranslateY(0);
         EmailContentsField.setMaxWidth(450);
         EmailContentsField.setMaxHeight(280);
+        EmailContentsField.setWrapText(true);
+        
         
         
         //Creates "Error" Image view on the pane.
