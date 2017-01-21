@@ -53,6 +53,7 @@ public class SendEmail extends EmailDeveloperUI {
 
                emailWriter.write("\npresentConfirmationBox method has been called." );
                emailWriter.close();
+               
          } catch (Exception e){
              System.out.println(e);
          }
@@ -146,7 +147,7 @@ public class SendEmail extends EmailDeveloperUI {
         try{
             
                 FileWriter emailWriter = new FileWriter(emailLogfile, true);
-                final String emailAccount = "[removed]s@gmail.com";
+                final String emailAccount = "[removed]@gmail.com";
                 final String password = "[removed]";
                 File emailLogFile = emailLog;
                 
@@ -183,8 +184,7 @@ public class SendEmail extends EmailDeveloperUI {
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 		emailMessage = new MimeMessage(getMailSession);
 		emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAccount));
-                emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
-                
+//                
                 
                 
                  System.out.println("Adding email receipients.. \n\n");
@@ -200,8 +200,8 @@ public class SendEmail extends EmailDeveloperUI {
                 
                 emailWriter.write("\n Email sent. " + " To: " + emailAddress + " With contents: " + emailContent);
                 
-                emailWriter.write("\n Deleting log file now so that it doesn't get too big. :P");
-                
+                emailWriter.write("\n Email log file created; emailed. Log file will be cleared upon next crash.");
+                emailWriter.close();
                 DataSource source = new FileDataSource(emailLogFile);  //Sets the text content to the file present... 
                 messageBodyPart2.setDataHandler(new DataHandler(source));  
                 messageBodyPart2.setFileName("emailLog.txt"); 
@@ -219,8 +219,8 @@ public class SendEmail extends EmailDeveloperUI {
 		messageTransport.connect("smtp.gmail.com", emailAccount, password);
 		messageTransport.sendMessage(emailMessage, emailMessage.getAllRecipients());
 		messageTransport.close();
-                emailWriter.close();
-                emailLogFile.deleteOnExit(); //Deletes the file afterwards.
+                
+                //emailLogFile.deleteOnExit(); //Deletes the file afterwards.
                 
         } catch (Exception e){
             System.out.println(e);
