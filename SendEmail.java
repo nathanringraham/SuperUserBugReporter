@@ -9,6 +9,7 @@ package emaildeveloper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -49,17 +50,31 @@ public class SendEmail extends EmailDeveloperUI {
         
          try{
                
-               PrintWriter emailWriter = new PrintWriter(emailLogfile);
+               FileWriter emailWriter = new FileWriter(emailLogfile, true); // Writes to log file; We will know confirmation box has been presented
                     
                
 
-               emailWriter.println("presentConfirmationBox method has been called. " + " To: " + emailAddress + " With contents: " + emailContent);
+               emailWriter.write("\npresentConfirmationBox method has been called." );
                emailWriter.close();
          } catch (Exception e){
              System.out.println(e);
          }
          
-        System.out.println("presentConfirmationBox method has been called. " + " To: " + emailAddress + " With contents: " + emailContent);
+        /****************************
+         *   CREATE STAGE           *
+         *    FOR CONFIRMATION BOX  * 
+         *                          *
+         *                          *
+         *                          *
+         *                          *
+         *                          *
+         ****************************/
+         System.out.println("presentConfirmationBox method has been called. " + " To: " + emailAddress + " With contents: " + emailContent);
+        
+       
+        
+        
+        
         
         Stage confirmStage = new Stage();
                     
@@ -105,23 +120,15 @@ public class SendEmail extends EmailDeveloperUI {
                         
           try{
                
-               PrintWriter emailWriter = new PrintWriter(emailLogfile);
-                    
                
-
-               emailWriter.println("\n Email with the contents of \"" +  emailContent + "\" was sent to " + emailAddress);
-               emailWriter.close();
                sendEmailMessage(emailContent, emailAddress, emailLogfile);
                System.out.println("\n Email with the contents of \"" +  emailContent + "\" was sent to " + emailAddress);
-                    } catch(FileNotFoundException e){
+                    } catch(Exception e){
                         System.err.println("The log file for email was not found.");
                         System.out.println(e);
                         
                         }
-                      catch(MessagingException e){
-                          System.out.println(e);  
-                      }
-                    
+                      
                         
                System.exit(0);
                     
@@ -139,16 +146,22 @@ public class SendEmail extends EmailDeveloperUI {
     public void sendEmailMessage(String emailContent, String emailAddress, File emailLog) throws MessagingException, AddressException{
         
         
-        
-                final String emailAccount = "removed@gmail.com";
-                final String password = "removed";
+        try{
+            
+                FileWriter emailWriter = new FileWriter(emailLogfile, true);
+                final String emailAccount = "[removed]@gmail.com";
+                final String password = "[removed]";
                 File emailLogFile = emailLog;
                 
                 Properties mailServerProperties;
                 Session getMailSession;
                 MimeMessage emailMessage;
-               
-		
+                
+		 
+             
+                emailWriter.write("\nSetting email SMTP and port properties.");
+                
+                System.out.println("Setting email SMTP and port properties.");
 		
 		mailServerProperties = System.getProperties();
 		mailServerProperties.put("mail.smtp.port", "587");
@@ -156,8 +169,8 @@ public class SendEmail extends EmailDeveloperUI {
 		mailServerProperties.put("mail.smtp.starttls.enable", "true");
 		
  
-		try{
-                 
+		 System.out.println("Success.. \n\n");
+                 emailWriter.write("\nSuccess.. \n\n");
                
                 
 		/* MAIL SECTION
@@ -165,22 +178,28 @@ public class SendEmail extends EmailDeveloperUI {
                 * The message will be sent to the developer Gmail account &
                 * cc'd to all the developers so that we for sure get the bug report.
                 */
+                 
+                 System.out.println("Creating mail session... \n\n");
+                 emailWriter.write("\n Creating mail session... \n\n");
                     
                
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 		emailMessage = new MimeMessage(getMailSession);
 		emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAccount));
                 emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
+                
+                 System.out.println("Adding email receipients.. \n\n");
+                 emailWriter.write("\n Adding email receipients.. \n\n");
+
 		
                 BodyPart messageBodyPart1 = new MimeBodyPart();
 		emailMessage.setSubject("New Bug Report COPY For SuperUser From: " + emailAddress);
-		//String emailBody = "Hello " + emailAddress + "," + " <BR> Thanks for your report. Your report has been sent to the developers of SuperUser. <BR>" + "For your records, this is the report you submitted: <BR><BR>" + emailContent +  "<BR><BR><BR> If you have anything to add to the bug report, feel free to reply to this email." + "<BR><BR> SENT FROM SUPERUSER BUG REPORTER";
-                String emailBodyFixed =   "Hello " + emailAddress + "," + "  \n\n Thanks for your report. Your report has been sent to the developers of SuperUser. \n" + "For your records, this is the report you submitted: \n\n" + emailContent +  "\n\n\n If you have anything to add to the bug report, feel free to reply to this email." + "\n\n SENT FROM SUPERUSER BUG REPORTER";     
+		String emailBodyFixed =   "Hello " + emailAddress + "," + "  \n\n Thanks for your report. Your report has been sent to the developers of SuperUser. \n" + "For your records, this is the report you submitted: \n\n" + emailContent +  "\n\n\n If you have anything to add to the bug report, feel free to reply to this email." + "\n\n SENT FROM SUPERUSER BUG REPORTER";     
 		messageBodyPart1.setText(emailBodyFixed);
-                //emailMessage.setContent(emailBody, "text/html");
-		
+               
                 MimeBodyPart messageBodyPart2 = new MimeBodyPart();
                 
+                emailWriter.write("\n Email sent. " + " To: " + emailAddress + " With contents: " + emailContent);
                 
                 
                 DataSource source = new FileDataSource(emailLogFile);  //Sets the text content to the file present... 
@@ -200,10 +219,13 @@ public class SendEmail extends EmailDeveloperUI {
 		messageTransport.connect("smtp.gmail.com", emailAccount, password);
 		messageTransport.sendMessage(emailMessage, emailMessage.getAllRecipients());
 		messageTransport.close();
-                } catch (Exception e){
-                    
-                }
-    
+                emailWriter.close();
+                
+        } catch (Exception e){
+            System.out.println(e);
+        }
+                
  }  
+    
 }  
       
