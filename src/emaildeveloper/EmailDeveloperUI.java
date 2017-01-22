@@ -8,6 +8,7 @@ package emaildeveloper;
 
 
 import java.io.File;
+import java.io.FileWriter;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -39,97 +40,124 @@ public class EmailDeveloperUI extends Application {
          *                          *
          *                          *
          ****************************/
-       
-        //Create label for email...
-        Label RecipientEmail = new Label("Enter your email address: ");
-        RecipientEmail.setTranslateX(-250);
-        RecipientEmail.setTranslateY(-200);
+        File existingEmailFile = new File("emailLog.txt");
         
+        if (!existingEmailFile.exists()){
+            System.out.println("File doesn't exist");
+        } else {
+            System.out.println("File exists.. Deleting.");
+            existingEmailFile.delete();
+            
+        }
+        
+        try{
+            FileWriter UILogWriter = new FileWriter(existingEmailFile);
+            
+            //Create label for email...
+            Label RecipientEmail = new Label("Enter your email address: ");
+            RecipientEmail.setTranslateX(-250);
+            RecipientEmail.setTranslateY(-200);
+            UILogWriter.write("\nReceipient Email Created\n ");
         //Create text field so people can enter their email..
-        TextField ToEmailTextField = new TextField();
+             TextField ToEmailTextField = new TextField();
         
-        ToEmailTextField.setTranslateX(-65);
-        ToEmailTextField.setTranslateY(-200);
-        ToEmailTextField.setMaxWidth(200);
-        
+             ToEmailTextField.setTranslateX(-65);
+             ToEmailTextField.setTranslateY(-200);
+             ToEmailTextField.setMaxWidth(200);
+             UILogWriter.write("\nToEmailTextField Created\n ");
        
         //Create content email label...
         
-        Label ContentsLabel = new Label("What were you doing at the time of the crash?");
-        ContentsLabel.setTranslateX(-188);
-        ContentsLabel.setTranslateY(-150);
-        
+             Label ContentsLabel = new Label("What were you doing at the time of the crash?");
+             ContentsLabel.setTranslateX(-188);
+             ContentsLabel.setTranslateY(-150);
+             UILogWriter.write("\nContents label created properly\n");
+             
         //Create text area for people to enter their report.
         
-        TextArea EmailContentsField = new TextArea();
+             TextArea EmailContentsField = new TextArea();
         
-        EmailContentsField.setTranslateX(0);
-        EmailContentsField.setTranslateY(0);
-        EmailContentsField.setMaxWidth(450);
-        EmailContentsField.setMaxHeight(280);
-        EmailContentsField.setWrapText(true);
+             EmailContentsField.setTranslateX(0);
+             EmailContentsField.setTranslateY(0);
+             EmailContentsField.setMaxWidth(450);
+             EmailContentsField.setMaxHeight(280);
+             EmailContentsField.setWrapText(true);
         
+             UILogWriter.write("\nTextArea for EmailContents created.\n ");
         
-        
-        //Creates "Error" Image view on the pane.
-        
-        ImageView errorImageView = new ImageView();
-        errorImageView.setImage(new Image("resources/RedBlock.gif"));     
-        errorImageView.setLayoutX(0);
-        errorImageView.setLayoutY(0);
-        errorImageView.setTranslateX(310);
-        errorImageView.setTranslateY(-210);
+             
       
         
-        // Creates Error Label for NO email..
+              // Creates Error Label for NO email..
         
-        Label errorNoEmail = new Label("ERROR: Please enter an email..");
-        errorNoEmail.setVisible(false);
-        errorNoEmail.setTranslateX(ToEmailTextField.getTranslateX() + 230);
-        errorNoEmail.setTranslateY(ToEmailTextField.getTranslateY());
-        errorNoEmail.setTextFill(Color.RED);
+              Label errorNoEmail = new Label("");
+              errorNoEmail.setVisible(false);
+              errorNoEmail.setTranslateX(ToEmailTextField.getTranslateX() + 230);
+              errorNoEmail.setTranslateY(ToEmailTextField.getTranslateY());
+              errorNoEmail.setTextFill(Color.RED);
         
-        //Creates send email button
+              //Creates send email button
         
         
         
-        Button CreateEmailButton = new Button();
-        CreateEmailButton.setTranslateY(200);
-        CreateEmailButton.setText("Send Email");
-        CreateEmailButton.setOnAction(event -> { //Button Click Event
+              Button CreateEmailButton = new Button();
+              CreateEmailButton.setTranslateY(200);
+              CreateEmailButton.setText("Send Email");
+              CreateEmailButton.setOnAction(event -> { //Button Click Event
             
-             {
+                {
                 
                 
-                String toEmailName = ToEmailTextField.getText();
-                String emailContentsItself = EmailContentsField.getText();
+                    String toEmailName = ToEmailTextField.getText();
+                    String emailContentsItself = EmailContentsField.getText();
                 
                 
                
-             
-                if (!toEmailName.isEmpty()){ //Checks if the email field is left empty.. 
-                    
-                    
-                    try{
+                    if (!toEmailName.isEmpty()){
+                        errorNoEmail.setVisible(false);
+                        
+                        if (emailIsValid(toEmailName)){
+                            try{
                 
-                        SendEmail emailOptionPane = new SendEmail(toEmailName, emailContentsItself);
+                                SendEmail emailOptionPane = new SendEmail(toEmailName, emailContentsItself);
                     
-                        emailOptionPane.presentConfirmationBox(toEmailName, emailContentsItself);
+                                emailOptionPane.presentConfirmationBox(toEmailName, emailContentsItself);
+                                errorNoEmail.setVisible(false);
+                                
+                                } catch (Exception e){
+                                    System.out.println(e);
+                                    errorNoEmail.setVisible(false);
+                            
+                                    }
+                            
+                        } else{
+                            errorNoEmail.setText("ERROR: Email is not valid.");
+                            errorNoEmail.setVisible(true);
+                            try{
+                                UILogWriter.write("\nUser didn't a valid email into the email box..\n");
+                                
+                                } catch (Exception e){
+                                    System.out.println(e);
+                            }
+                            
+                        }
+                        
+                        
+                        
+                    } else{
+                        errorNoEmail.setText("ERROR: No email entered.");
+                        errorNoEmail.setVisible(true);
+                        try{
+                            UILogWriter.write("\nUser didn't enter anything in the email box...\n");
                         } catch (Exception e){
                             System.out.println(e);
-                            errorNoEmail.setVisible(false);
-                            
-                            }
-                    } else{
-                    
-                        errorNoEmail.setVisible(true);
-                            
-                    
-                    
-                    
-                   }
+                        }
+                        
+                    }                    
             }
         });
+        UILogWriter.close();
+        
         
         StackPane root = new StackPane();
         root.getChildren().addAll(CreateEmailButton, RecipientEmail, ToEmailTextField, EmailContentsField, ContentsLabel, errorNoEmail);
@@ -140,6 +168,12 @@ public class EmailDeveloperUI extends Application {
         primaryStage.setTitle("Email Developers");
         primaryStage.setScene(scene);
         primaryStage.show();
+            
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        
+        
     }
 
     public static void main(String[] args) {
@@ -150,6 +184,15 @@ public class EmailDeveloperUI extends Application {
     
     
 
+    public static boolean emailIsValid(String emailAddress){
+        
+        return emailAddress.contains("@") && ((emailAddress.contains(".com") || (emailAddress.contains(".org")) || (emailAddress.contains(".net") || (emailAddress.contains(".edu")) || (emailAddress.contains(".co")))));
+        
+        
+        
+    }
+    
+    
     
     
 }
