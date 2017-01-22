@@ -88,13 +88,13 @@ public class EmailDeveloperUI extends Application {
              
       
         
-              // Creates Error Label for NO email..
+              // Creates Error Label email errors..
         
-              Label errorNoEmail = new Label("");
-              errorNoEmail.setVisible(false);
-              errorNoEmail.setTranslateX(ToEmailTextField.getTranslateX() + 230);
-              errorNoEmail.setTranslateY(ToEmailTextField.getTranslateY());
-              errorNoEmail.setTextFill(Color.RED);
+              Label emailErrorLabel = new Label("");
+              emailErrorLabel.setVisible(false);
+              emailErrorLabel.setTranslateX(ToEmailTextField.getTranslateX() + 230);
+              emailErrorLabel.setTranslateY(ToEmailTextField.getTranslateY());
+              emailErrorLabel.setTextFill(Color.RED);
         
               //Creates send email button
         
@@ -114,7 +114,7 @@ public class EmailDeveloperUI extends Application {
                 
                
                     if (!toEmailName.isEmpty()){
-                        errorNoEmail.setVisible(false);
+                        emailErrorLabel.setVisible(false);
                         
                         if (emailIsValid(toEmailName)){
                             try{
@@ -122,17 +122,17 @@ public class EmailDeveloperUI extends Application {
                                 SendEmail emailOptionPane = new SendEmail(toEmailName, emailContentsItself);
                     
                                 emailOptionPane.presentConfirmationBox(toEmailName, emailContentsItself);
-                                errorNoEmail.setVisible(false);
+                                emailErrorLabel.setVisible(false);
                                 
                                 } catch (Exception e){
                                     System.out.println(e);
-                                    errorNoEmail.setVisible(false);
+                                    emailErrorLabel.setVisible(false);
                             
                                     }
                             
                         } else{
-                            errorNoEmail.setText("ERROR: Email is not valid.");
-                            errorNoEmail.setVisible(true);
+                            emailErrorLabel.setText("ERROR: Email is not valid.");
+                            emailErrorLabel.setVisible(true);
                             try{
                                 UILogWriter.write("\nUser didn't a valid email into the email box..\n");
                                 
@@ -145,8 +145,8 @@ public class EmailDeveloperUI extends Application {
                         
                         
                     } else{
-                        errorNoEmail.setText("ERROR: No email entered.");
-                        errorNoEmail.setVisible(true);
+                        emailErrorLabel.setText("ERROR: No email entered.");
+                        emailErrorLabel.setVisible(true);
                         try{
                             UILogWriter.write("\nUser didn't enter anything in the email box...\n");
                         } catch (Exception e){
@@ -160,7 +160,7 @@ public class EmailDeveloperUI extends Application {
         
         
         StackPane root = new StackPane();
-        root.getChildren().addAll(CreateEmailButton, RecipientEmail, ToEmailTextField, EmailContentsField, ContentsLabel, errorNoEmail);
+        root.getChildren().addAll(CreateEmailButton, RecipientEmail, ToEmailTextField, EmailContentsField, ContentsLabel, emailErrorLabel);
         
         Scene scene = new Scene(root, 700, 500);
         
