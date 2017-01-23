@@ -53,13 +53,13 @@ public class EmailDeveloperUI extends Application {
         
             
             //Create label for email...
-            Label RecipientEmail = new Label("Enter your email address: ");
-            RecipientEmail.setTranslateX(-250);
-            RecipientEmail.setTranslateY(-200);
+            Label RecipientEmail = new Label();
+            
+            createLabel(RecipientEmail, "Enter your email address:", -250, -200);
+           
             writeToLogger("\nRecipient Email Created\n ");
         //Create text field so people can enter their email..
              TextField ToEmailTextField = new TextField();
-        
              ToEmailTextField.setTranslateX(-65);
              ToEmailTextField.setTranslateY(-200);
              ToEmailTextField.setMaxWidth(200);
@@ -67,9 +67,10 @@ public class EmailDeveloperUI extends Application {
        
         //Create content email label...
         
-             Label ContentsLabel = new Label("What were you doing at the time of the crash?");
-             ContentsLabel.setTranslateX(-188);
-             ContentsLabel.setTranslateY(-150);
+             Label ContentsLabel = new Label();
+             
+             createLabel(ContentsLabel, "What were you doing at the time of the crash?", -188, -150);
+             
              writeToLogger("\nContents label created properly\n");
              
         //Create text area for people to enter their report.
@@ -90,9 +91,9 @@ public class EmailDeveloperUI extends Application {
               // Creates Error Label email errors..
         
               Label emailErrorLabel = new Label("");
+              
+              createLabel(emailErrorLabel, "",ToEmailTextField.getTranslateX() + 230, ToEmailTextField.getTranslateY());
               emailErrorLabel.setVisible(false);
-              emailErrorLabel.setTranslateX(ToEmailTextField.getTranslateX() + 230);
-              emailErrorLabel.setTranslateY(ToEmailTextField.getTranslateY());
               emailErrorLabel.setTextFill(Color.RED);
         
               //Creates send email button
@@ -195,10 +196,23 @@ public class EmailDeveloperUI extends Application {
         } catch (Exception e){
             System.out.println(e);
         }
+     }
+    
+    public static void createLabel(Label labelName, String labelContents, double setTransX, double setTransY){
+     
+        Label actualLabel = labelName;
+        
+        actualLabel.setText(labelContents);
+        actualLabel.setTranslateX(setTransX);
+        actualLabel.setTranslateY(setTransY);
+        
+        
+        
+    
+        
         
         
         
     }
-    
     
 }
