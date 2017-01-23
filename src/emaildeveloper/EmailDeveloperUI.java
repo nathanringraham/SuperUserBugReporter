@@ -50,28 +50,27 @@ public class EmailDeveloperUI extends Application {
             
         }
         
-        try{
-            FileWriter UILogWriter = new FileWriter(existingEmailFile);
+        
             
             //Create label for email...
             Label RecipientEmail = new Label("Enter your email address: ");
             RecipientEmail.setTranslateX(-250);
             RecipientEmail.setTranslateY(-200);
-            UILogWriter.write("\nReceipient Email Created\n ");
+            writeToLogger("\nRecipient Email Created\n ");
         //Create text field so people can enter their email..
              TextField ToEmailTextField = new TextField();
         
              ToEmailTextField.setTranslateX(-65);
              ToEmailTextField.setTranslateY(-200);
              ToEmailTextField.setMaxWidth(200);
-             UILogWriter.write("\nToEmailTextField Created\n ");
+             writeToLogger("\nToEmailTextField Created\n ");
        
         //Create content email label...
         
              Label ContentsLabel = new Label("What were you doing at the time of the crash?");
              ContentsLabel.setTranslateX(-188);
              ContentsLabel.setTranslateY(-150);
-             UILogWriter.write("\nContents label created properly\n");
+             writeToLogger("\nContents label created properly\n");
              
         //Create text area for people to enter their report.
         
@@ -83,7 +82,7 @@ public class EmailDeveloperUI extends Application {
              EmailContentsField.setMaxHeight(280);
              EmailContentsField.setWrapText(true);
         
-             UILogWriter.write("\nTextArea for EmailContents created.\n ");
+             writeToLogger("\nTextArea for EmailContents created.\n ");
         
              
       
@@ -133,12 +132,10 @@ public class EmailDeveloperUI extends Application {
                         } else{
                             emailErrorLabel.setText("ERROR: Email is not valid.");
                             emailErrorLabel.setVisible(true);
-                            try{
-                                UILogWriter.write("\nUser didn't a valid email into the email box..\n");
+                            
+                                writeToLogger("\nUser didn't a valid email into the email box..\n");
                                 
-                                } catch (Exception e){
-                                    System.out.println(e);
-                            }
+                                
                             
                         }
                         
@@ -147,16 +144,13 @@ public class EmailDeveloperUI extends Application {
                     } else{
                         emailErrorLabel.setText("ERROR: No email entered.");
                         emailErrorLabel.setVisible(true);
-                        try{
-                            UILogWriter.write("\nUser didn't enter anything in the email box...\n");
-                        } catch (Exception e){
-                            System.out.println(e);
-                        }
+                        writeToLogger("\nUser didn't enter anything into the email field\n");
+                        
                         
                     }                    
             }
         });
-        UILogWriter.close();
+        
         
         
         StackPane root = new StackPane();
@@ -169,9 +163,7 @@ public class EmailDeveloperUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
             
-        } catch (Exception e){
-            System.out.println(e);
-        }
+       
         
         
     }
@@ -192,7 +184,21 @@ public class EmailDeveloperUI extends Application {
         
     }
     
-    
+    public static void writeToLogger(String messageToBelogged){
+        try{
+            FileWriter UILogger = new FileWriter("emailLog.txt", true);
+            
+            UILogger.write(messageToBelogged);
+            UILogger.close();
+            
+            
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        
+        
+        
+    }
     
     
 }
