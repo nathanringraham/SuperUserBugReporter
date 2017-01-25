@@ -31,6 +31,7 @@ public class SendEmail extends EmailDeveloperUI {
     String emailContent;
     
     File emailLogfile = new File("emailLog.txt");
+    File systemLogFile = new File("systemLogs.txt");
     
     SendEmail(String messageRecipient, String messageContent) throws MessagingException{
        
@@ -46,7 +47,7 @@ public class SendEmail extends EmailDeveloperUI {
     public void presentConfirmationBox(String emailAddress, String emailContent) throws MessagingException {
         
          
-         writeToLogger("\npresentConfirmationBox method has been called." );
+         HelpfulMethods.writeToLogger("\npresentConfirmationBox method has been called." );
               
                
          
@@ -72,6 +73,8 @@ public class SendEmail extends EmailDeveloperUI {
                     
         StackPane confirmPane = new StackPane();
                     
+        
+        // Create confirm button to send email.
                     
                     
         Button confirmEmailButton = new Button("Confirm");
@@ -81,6 +84,9 @@ public class SendEmail extends EmailDeveloperUI {
                     
         confirmEmailButton.setTranslateX(-30);
                     
+          // Create cancel button to cancel email.
+        
+        
         Button cancelButton = new Button("Cancel");
                     
         cancelButton.setTranslateX(40);
@@ -91,7 +97,7 @@ public class SendEmail extends EmailDeveloperUI {
         confirmItLabel.setTranslateX(0);
         confirmItLabel.setTranslateY(5);
                     
-                    
+        // Creates an image view to mock JOptionPane's question mark.
                     
         ImageView questionMarkImageConfirm = new ImageView("resources/questionmark.png");
                     
@@ -116,6 +122,8 @@ public class SendEmail extends EmailDeveloperUI {
                System.out.println("\n Email with the contents of \"" +  emailContent + "\" was sent to " + emailAddress);
                     } catch(Exception e){
                         System.err.println("The log file for email was not found.");
+                        HelpfulMethods.writeToSystemErrorLogger("The log file for email was not found.");
+                        HelpfulMethods.writeToSystemErrorLogger(e.toString());
                         System.out.println(e);
                         
                         }
@@ -125,9 +133,10 @@ public class SendEmail extends EmailDeveloperUI {
                     
                     });
                     cancelButton.setOnAction(cancelAction ->{
-                        System.out.println("Message confirmation dialog cancelled.");
-                        confirmStage.close();
                         
+                        System.out.println("Message confirmation dialog cancelled.");
+                        HelpfulMethods.writeToLogger("Message confirmation dialog cancelled.");
+                        confirmStage.close();
                         
                     });
                     
@@ -143,9 +152,12 @@ public class SendEmail extends EmailDeveloperUI {
                 Session getMailSession;
                 MimeMessage emailMessage;
 		File emailLogFile = this.emailLogfile;
+                File systemLogFile = this.systemLogFile;
                 
              
-                writeToLogger("\nSetting email SMTP and port properties.");
+                // Set up mail properties to ensure the email can be sent.
+                
+                HelpfulMethods.writeToLogger("\nSetting email SMTP and port properties.");
                 
                 System.out.println("Setting email SMTP and port properties.");
 		
@@ -156,7 +168,7 @@ public class SendEmail extends EmailDeveloperUI {
 		
  
 		 System.out.println("Success.. \n\n");
-                 writeToLogger("\nSuccess.. \n\n");
+                 HelpfulMethods.writeToLogger("Success.. ");
                
                 
 		/* MAIL SECTION
@@ -165,19 +177,18 @@ public class SendEmail extends EmailDeveloperUI {
                 * cc'd to all the developers so that we for sure get the bug report.
                 */
                  
-                 System.out.println("Creating mail session... \n\n");
-                 writeToLogger("\n Creating mail session... \n\n");
+                 System.out.println("\nCreating mail session...\n");
+                 HelpfulMethods.writeToLogger("Creating mail session...");
                     
                
 		getMailSession = Session.getDefaultInstance(mailServerProperties, null);
 		emailMessage = new MimeMessage(getMailSession);
 		emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAccount));
-                emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
-
-                
+                emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress)); // Comment out the next 4 lines of code while testing to avoid spamming emails
+//            
                 
                  System.out.println("Adding email receipients.. \n\n");
-                 writeToLogger("\n Adding email receipients.. \n\n");
+                 HelpfulMethods.writeToLogger("Adding email receipients..");
 
 		
                  BodyPart messageBodyPart1 = new MimeBodyPart();
@@ -187,17 +198,24 @@ public class SendEmail extends EmailDeveloperUI {
                
                  MimeBodyPart messageBodyPart2 = new MimeBodyPart();
                 
-                 writeToLogger("\n Email sent. " + " To: " + emailAddress + " With contents: " + emailContent);
+                 HelpfulMethods.writeToLogger("Email sent. " + " To: " + emailAddress + " With contents: " + emailContent);
                 
-                 writeToLogger("\n Email log file created; emailed. Log file will be cleared upon next crash.");
+                 HelpfulMethods.writeToLogger("Email log file created; emailed. Log file will be cleared upon next crash.");
                  
                  DataSource source = new FileDataSource(emailLogFile);  //Sets the text content to the file present... 
                  messageBodyPart2.setDataHandler(new DataHandler(source));  
-                 messageBodyPart2.setFileName("emailLog.txt"); 
-                
+                 messageBodyPart2.setFileName("emailLog.txt");
+                 
+                 MimeBodyPart messageBodyPart3 = new MimeBodyPart();
+                 DataSource source2 = new FileDataSource(systemLogFile);
+                 messageBodyPart3.setDataHandler(new DataHandler(source2));
+                 messageBodyPart3.setFileName("systemLogs.txt");
+//                 
                  Multipart multipart = new MimeMultipart();  
                  multipart.addBodyPart(messageBodyPart1);  
                  multipart.addBodyPart(messageBodyPart2); 
+                 multipart.addBodyPart(messageBodyPart3);
+                 
                 
                  emailMessage.setContent(multipart);
                 
