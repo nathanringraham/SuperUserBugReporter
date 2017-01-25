@@ -31,6 +31,8 @@ public class EmailDeveloperUI extends Application {
     @Override
     public void start(Stage primaryStage) {
     
+        HelpfulMethods.presentGameCrashNotifier(primaryStage);
+   
         /****************************
          *   CREATES STAGE ELEMENTS *
          *    FOR EMAILDEVELOPERUI  * 
@@ -43,18 +45,33 @@ public class EmailDeveloperUI extends Application {
         
         
         
-        File existingEmailFile = new File("emailLog.txt");
+        File systemLogFile = new File("emailLog.txt");
+        File errorLogFile = new File("errorLogFile.txt");
+        
         
         //To make sure our log file doesn't go on forever, the crash reporter will delete the log file at the beginning
         // when this program is ran.
+        // The requirements for this game need two 
         
-        if (!existingEmailFile.exists()){
-            System.out.println("File doesn't exist; creating file.");
-            writeToLogger("File doesn't exist; creating file");
+        if (!new File("systemLogs.txt").exists()){
+            System.out.println("systemLogFile File doesn't exist; creating file.");
+            HelpfulMethods.writeToLogger(" systemLogFile File doesn't exist; creating file");
+            
             
         } else {
-            System.out.println("File exists.. Deleting.");
-            existingEmailFile.delete();
+            System.out.println("systemLogFile File exists.. Deleting.");
+            systemLogFile.delete();
+            
+        }
+        
+         if (!new File("errorLogFile").exists()){
+            System.out.println("errorLogFile doesn't exist; creating file.");
+            HelpfulMethods.writeToSystemErrorLogger(" errorLogFile File doesn't exist; creating file");
+            
+            
+        } else {
+            System.out.println("errorLogFile exists Deleting.");
+            errorLogFile.delete();
             
         }
         
@@ -62,23 +79,23 @@ public class EmailDeveloperUI extends Application {
             
             //Create label for email...
             Label RecipientEmail = new Label();
-            createLabel(RecipientEmail, "Enter your email address:", -250, -200);
+            HelpfulMethods.createLabel(RecipientEmail, "Enter your email address:", -250, -200);
            
-            writeToLogger("Recipient Email Created");
+            HelpfulMethods.writeToLogger("Recipient Email Created");
         //Create text field so people can enter their email..
              TextField ToEmailTextField = new TextField();
              ToEmailTextField.setTranslateX(-65);
              ToEmailTextField.setTranslateY(-200);
              ToEmailTextField.setMaxWidth(200);
-             writeToLogger("ToEmailTextField Created");
+             HelpfulMethods.writeToLogger("ToEmailTextField Created");
        
         //Create content email label...
         
              Label ContentsLabel = new Label();
              
-             createLabel(ContentsLabel, "What were you doing at the time of the crash?", -188, -150);
+             HelpfulMethods.createLabel(ContentsLabel, "What were you doing at the time of the crash?", -188, -150);
              
-             writeToLogger("Contents label created properly");
+             HelpfulMethods.writeToLogger("Contents label created properly");
              
         //Create text area for people to enter their report.
         
@@ -90,7 +107,7 @@ public class EmailDeveloperUI extends Application {
              EmailContentsField.setMaxHeight(280);
              EmailContentsField.setWrapText(true);
         
-             writeToLogger("\nTextArea for EmailContents created.\n ");
+             HelpfulMethods.writeToLogger("\nTextArea for EmailContents created.\n ");
         
              
       
@@ -99,7 +116,7 @@ public class EmailDeveloperUI extends Application {
         
               Label emailErrorLabel = new Label();
               
-              createLabel(emailErrorLabel, "",ToEmailTextField.getTranslateX() + 230, ToEmailTextField.getTranslateY());
+              HelpfulMethods.createLabel(emailErrorLabel, "",ToEmailTextField.getTranslateX() + 230, ToEmailTextField.getTranslateY());
               emailErrorLabel.setVisible(false);
               emailErrorLabel.setTextFill(Color.RED);
         
@@ -141,8 +158,9 @@ public class EmailDeveloperUI extends Application {
                             emailErrorLabel.setText("ERROR: Email is not valid.");
                             emailErrorLabel.setVisible(true);
                             
-                                writeToLogger("User didn't a valid email into the email box..");
+                                HelpfulMethods.writeToSystemErrorLogger("User didn't a valid email into the email box..");
                                 
+                                HelpfulMethods.writeToLogger("User tried entering an invalid email..");
                                 
                             
                         }
@@ -153,8 +171,8 @@ public class EmailDeveloperUI extends Application {
                         // Nothing in the email box? Display the error for it.
                         emailErrorLabel.setText("ERROR: No email entered.");
                         emailErrorLabel.setVisible(true);
-                        writeToLogger("User didn't enter anything into the email field");
-                        
+                        HelpfulMethods.writeToSystemErrorLogger("User didn't enter anything into the email field");
+                        HelpfulMethods.writeToLogger("User tried entering a blank email..");
                         
                     }                    
             }
@@ -170,7 +188,7 @@ public class EmailDeveloperUI extends Application {
         primaryStage.setResizable(false);
         primaryStage.setTitle("Email Developers");
         primaryStage.setScene(scene);
-        primaryStage.show();
+        //primaryStage.show(); //Commented out since we are trying to hide the pane until the user confirms that they want to send a report. :) 
             
        
         
@@ -193,27 +211,7 @@ public class EmailDeveloperUI extends Application {
         
         
     }
-    
-    public static void writeToLogger(String messageToBelogged){
-        //This method allows the program to write to a log file.
-        
-        try{
-            FileWriter UILogger = new FileWriter("emailLog.txt", true);
-            UILogger.write("\n" + messageToBelogged + "\n");
-            UILogger.close();
-              
-        } catch (Exception e){
-            System.out.println(e);
-        }
-     }
-    
-    public static void createLabel(Label labelName, String labelContents, double setTransX, double setTransY){
-        //This method makes creating labels easy.
-        Label actualLabel = labelName;
-        actualLabel.setText(labelContents);
-        actualLabel.setTranslateX(setTransX);
-        actualLabel.setTranslateY(setTransY);
-     
-    }
-    
 }
+
+    
+
