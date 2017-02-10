@@ -8,7 +8,6 @@ package emaildeveloper;
 
 
 import java.io.File;
-import java.io.FileWriter;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,8 +16,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 
@@ -45,7 +42,7 @@ public class EmailDeveloperUI extends Application {
         
         
         
-        File systemLogFile = new File("emailLog.txt");
+        File systemLogFile = new File("systemLogs.txt");
         File errorLogFile = new File("errorLogFile.txt");
         
         
@@ -53,7 +50,7 @@ public class EmailDeveloperUI extends Application {
         // when this program is ran.
         // The requirements for this game need two 
         
-        if (!new File("systemLogs.txt").exists()){
+        if (!systemLogFile.exists()){
             System.out.println("systemLogFile File doesn't exist; creating file.");
             HelpfulMethods.writeToLogger(" systemLogFile File doesn't exist; creating file");
             
@@ -64,7 +61,7 @@ public class EmailDeveloperUI extends Application {
             
         }
         
-         if (!new File("errorLogFile").exists()){
+         if (!errorLogFile.exists()){
             System.out.println("errorLogFile doesn't exist; creating file.");
             HelpfulMethods.writeToSystemErrorLogger(" errorLogFile File doesn't exist; creating file");
             
@@ -161,12 +158,9 @@ public class EmailDeveloperUI extends Application {
                                 HelpfulMethods.writeToSystemErrorLogger("User didn't a valid email into the email box..");
                                 
                                 HelpfulMethods.writeToLogger("User tried entering an invalid email..");
-                                
-                            
+        
                         }
-                        
-                        
-                        
+ 
                     } else{
                         // Nothing in the email box? Display the error for it.
                         emailErrorLabel.setText("ERROR: No email entered.");
@@ -188,28 +182,26 @@ public class EmailDeveloperUI extends Application {
         primaryStage.setResizable(false);
         primaryStage.setTitle("Email Developers");
         primaryStage.setScene(scene);
-        //primaryStage.show(); //Commented out since we are trying to hide the pane until the user confirms that they want to send a report. :) 
+       //primaryStage.show(); //Commented out since we are trying to hide the pane until the user confirms that they want to send a report. :) 
             
        
         
         
     }
 
-    public static void main(String[] args) {
-        
-   
-        launch(args);
-    }
+  
     
     
 
     public static boolean emailIsValid(String emailAddress){
         //This method checks the validity of an email by looking for "@" followed by a domain suffix.
         
-        return emailAddress.contains("@") && ((emailAddress.contains(".com") || (emailAddress.contains(".org")) || (emailAddress.contains(".net") || (emailAddress.contains(".edu")) || (emailAddress.contains(".co")) || (emailAddress.contains(".gov")))));
+        return emailAddress.contains("@") && (((emailAddress.contains(".org")) || (emailAddress.contains(".net") || (emailAddress.contains(".edu")) || (emailAddress.contains(".co")) || (emailAddress.contains(".gov")))));
+    }
+    
+      public static void main(String[] args) {
         
-        
-        
+        launch(args);
     }
 }
 

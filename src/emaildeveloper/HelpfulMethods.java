@@ -7,8 +7,6 @@
 package emaildeveloper;
 
 import java.io.FileWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -57,13 +55,13 @@ public class HelpfulMethods {
     
     public static void presentGameCrashNotifier(Stage primaryStage){
         
-        primaryStage.hide();
+        primaryStage.hide(); // Hide the main UI to prevent user from interacting with it
         Stage notifierStage = new Stage();
                               
         StackPane notifierPane = new StackPane();
                     
        
-        // Create confirm button to send email.
+        // Create sure button for prompt
         
         
                     
@@ -74,13 +72,16 @@ public class HelpfulMethods {
                     
         SureButton.setTranslateX(-30);
                     
-          // Create cancel button to cancel email.
+        // Create cancel button for prompt
         
         SureButton.setOnAction(sureEvent ->{
         
-        
-        primaryStage.show();
         notifierStage.hide();
+        
+        
+        
+        primaryStage.show(); // Show main UI if the user wants to submit a bug report 
+       
         
             
             
